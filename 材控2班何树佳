@@ -1,0 +1,76 @@
+#include<stdio.h>
+#include<time.h>
+#include<stdlib.h>
+#include<string.h>
+char name[100],way[3][10]={"石头","剪子","布"},mode_name[2][20]={"三局两胜","五局三胜"};
+void new_game(int mode,int *p_win,int * p_lose,int *p_tide){
+	char cmd[10];
+	int computer,user,win=0,lose=0;
+	int cnt[2]={3,5};
+	printf("***当前模式:\t%s\n",mode_name[mode]);
+	for(int i=0;i<cnt[mode];i++){
+		printf("***1 -- 石头;\t 2 -- 剪子\t 3 -- 布\n");
+		fgets(cmd,9,stdin);
+		user=(cmd[0]-'1')%3;
+		if(user<0)user+=3;
+		computer=rand()%3;
+		printf("***%-10s:%s\n",name,way[user]);
+		printf("***%-10s:%s","电脑",way[computer]);
+		if(computer==user)
+		{
+			printf("\t\t平\n");
+		}
+		else if(user-computer==-1 || user-computer==2)
+		{
+			printf("\t%s\t赢\n",name);
+			win++;
+		}
+		else
+		{
+			printf("\t电脑\t赢\n");
+			lose++;
+		}
+		if(win>lose+cnt[mode]-i-1 || lose>win+cnt[mode]-i-1)
+			break;
+	}
+	if(win>lose)
+	{
+		printf("恭喜！该局你赢家了！\n");
+		(*p_win)++;
+	}
+	else if(win<lose)
+	{
+		(*p_lose)++;
+		printf(" 可惜！，你输了本局！\n");
+	}
+	else
+	{
+		(*p_tide)++;
+		printf(" 此局平局！\n");
+	}
+}
+int main(){
+	srand(time(0));
+	char cmd[10];
+	int mode=0;
+	int win,lose,tide;
+	win=lose=tide=0;
+	printf("请输入玩家姓名:\t");
+	fgets(name,99,stdin);
+	name[strlen(name)-1]='\0';
+	while(1){
+		printf("/******************石头剪子布游戏 ******************\n");
+		printf("***玩家:\t%s\n",name);
+		printf("***比赛情况:\t赢:\t%d\t输:\t%d\t平:\t%d\n",win,lose,tide);
+		printf("***当前模式:\t%s\n",mode_name[mode]);
+		printf("***N -- 开始游戏；\tC -- 切换模式；\tQ -- 退出；\n");
+		fgets(cmd,9,stdin);
+		if(cmd[0]=='N' || cmd[0]=='n')
+			new_game(mode,&win,&lose,&tide);
+		else if(cmd[0]=='Q' || cmd[0]=='q')
+			break;
+		else
+			mode=1-mode;
+	}
+	return 0;
+}
